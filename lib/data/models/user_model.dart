@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tailor_app/core/constants/app_constants.dart';
 
 /// User model matching Firestore [users] collection.
@@ -30,7 +29,6 @@ class UserModel {
     DateTime createdAt = DateTime.now();
     final raw = map['createdAt'];
     if (raw != null) {
-      if (raw is Timestamp) createdAt = raw.toDate();
       if (raw is DateTime) createdAt = raw;
     }
     return UserModel(

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 /// Review model matching Firestore [reviews] collection.
 class ReviewModel {
@@ -22,7 +22,6 @@ class ReviewModel {
     DateTime createdAt = DateTime.now();
     final raw = map['createdAt'];
     if (raw != null) {
-      if (raw is Timestamp) createdAt = raw.toDate();
       if (raw is DateTime) createdAt = raw;
     }
     return ReviewModel(
@@ -41,7 +40,7 @@ class ReviewModel {
       'tailorId': tailorId,
       'rating': rating,
       'comment': comment,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'createdAt': createdAt,
     };
   }
 }

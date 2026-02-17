@@ -39,18 +39,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             _emailController.text.trim(),
             _passwordController.text,
           );
-      if (mounted) {
-        final profile = await ref.read(authServiceProvider).getCurrentUserProfile();
-        if (profile != null && profile.role != widget.role) {
-          setState(() {
-            _errorMessage = 'This account is registered as ${profile.role}. Please use the correct login.';
-            _isLoading = false;
-          });
-          await ref.read(authServiceProvider).signOut();
-          return;
-        }
-        if (profile?.isCustomer == true) context.go(AppRoutes.customerHome);
-        else context.go(AppRoutes.tailorHome);
+      if (!mounted) {
+        return;
+      }
+      final profile = await ref.read(authServiceProvider).getCurrentUserProfile();
+      if (!mounted) {
+        return;
+      }
+      if (profile != null && profile.role != widget.role) {
+        setState(() {
+          _errorMessage =
+              'This account is registered as ${profile.role}. Please use the correct login.';
+          _isLoading = false;
+        });
+        await ref.read(authServiceProvider).signOut();
+        return;
+      }
+      if (profile?.isCustomer == true) {
+        context.go(AppRoutes.customerHome);
+      } else {
+        context.go(AppRoutes.tailorHome);
       }
     } catch (e) {
       if (mounted) {

@@ -1,17 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tailor_app/core/constants/app_constants.dart';
 import 'package:tailor_app/data/models/user_model.dart';
 
-/// Handles Firebase Auth and syncing user profile to Firestore.
+/// Mock Auth Service - Firebase removed. Requires backend integration.
+/// TODO: Replace with real backend API calls or Firebase alternative.
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static String? _currentUserId;
+  static final Map<String, UserModel> _mockUsers = {};
 
-  User? get currentUser => _auth.currentUser;
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
+  String? get currentUserId => _currentUserId;
+  UserModel? get currentUser =>
+      _currentUserId != null ? _mockUsers[_currentUserId] : null;
 
-  /// Register with email/password and create user document with [role].
+  Stream<UserModel?> get authStateChanges {
+    return Stream.value(currentUser);
+  }
+
+  /// Register with email/password - mock implementation.
   Future<UserModel> register({
     required String email,
     required String password,
@@ -19,14 +23,9 @@ class AuthService {
     required String role,
     String? phone,
   }) async {
-    final cred = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final user = cred.user;
-    if (user == null) throw Exception('Registration failed');
+    final userId = DateTime.now().millisecondsSinceEpoch.toString();
     final userModel = UserModel(
-      id: user.uid,
+      id: userId,
       name: name,
       email: email,
       role: role,
@@ -34,60 +33,53 @@ class AuthService {
       createdAt: DateTime.now(),
       isAvailable: role == AppConstants.roleTailor ? true : null,
     );
-    await _firestore.collection(AppConstants.usersCollection).doc(user.uid).set(
-          userModel.toMap(),
-        );
+    _mockUsers[userId] = userModel;
+    _currentUserId = userId;
     return userModel;
   }
 
-  /// Sign in with email and password.
-  Future<User?> signIn(String email, String password) async {
-    final cred = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
+  /// Sign in with email/password - mock implementation.
+  Future<UserModel?> signIn(String email, String password) async {
+    final user = _mockUsers.values.firstWhere(
+      (u) => u.email == email,
+      orElse: () => UserModel(
+        id: '',
+        name: '',
+        email: '',
+        role: '',
+        createdAt: DateTime.now(),
+      ),
     );
-    return cred.user;
+    if (user.id.isEmpty) return null;
+    _currentUserId = user.id;
+    return user;
   }
 
   /// Sign out.
   Future<void> signOut() async {
-    await _auth.signOut();
+    _currentUserId = null;
   }
 
-  /// Send password reset email.
+  /// Send password reset email - mock implementation.
   Future<void> sendPasswordResetEmail(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    // Mock: would send email via backend
   }
 
-  /// Get current user profile from Firestore.
+  /// Get current user profile.
   Future<UserModel?> getCurrentUserProfile() async {
-    final uid = currentUser?.uid;
-    if (uid == null) return null;
-    final doc = await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .get();
-    if (!doc.exists) return null;
-    return UserModel.fromMap(doc.data()!, doc.id);
+    return currentUser;
   }
 
   /// Stream current user profile.
   Stream<UserModel?> streamUserProfile(String uid) {
-    return _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .snapshots()
-        .map((doc) {
-      if (!doc.exists) return null;
-      return UserModel.fromMap(doc.data()!, doc.id);
-    });
+    return Stream.value(_mockUsers[uid]);
   }
 
   /// Update tailor availability.
   Future<void> updateAvailability(String uid, bool isAvailable) async {
-    await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .update({'isAvailable': isAvailable});
+    final user = _mockUsers[uid];
+    if (user != null) {
+      _mockUsers[uid] = user.copyWith(isAvailable: isAvailable);
+    }
   }
 }

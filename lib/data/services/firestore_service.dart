@@ -1,144 +1,152 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tailor_app/core/constants/app_constants.dart';
 import 'package:tailor_app/data/models/order_model.dart';
 import 'package:tailor_app/data/models/review_model.dart';
 import 'package:tailor_app/data/models/user_model.dart';
 import 'package:tailor_app/data/models/measurement_profile_model.dart';
 
-/// Central Firestore service for users, orders, reviews, and measurement profiles.
+/// Mock Firestore service - Firebase removed. Requires backend integration.
+/// TODO: Replace with real backend API calls.
 class FirestoreService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final Map<String, UserModel> _mockUsers = {};
+  static final Map<String, OrderModel> _mockOrders = {};
+  static final Map<String, ReviewModel> _mockReviews = {};
+  static final Map<String, List<MeasurementProfileModel>> _mockProfiles = {};
 
   // ---------- Users ----------
   Future<UserModel?> getUser(String uid) async {
-    final doc = await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .get();
-    if (!doc.exists) return null;
-    return UserModel.fromMap(doc.data()!, doc.id);
+    return _mockUsers[uid];
   }
 
   Stream<List<UserModel>> streamTailors({String? searchName, bool? available}) {
-    Query<Map<String, dynamic>> q = _firestore
-        .collection(AppConstants.usersCollection)
-        .where('role', isEqualTo: AppConstants.roleTailor);
-    if (available != null) {
-      q = q.where('isAvailable', isEqualTo: available);
-    }
-    return q.snapshots().map((snap) {
-      return snap.docs
-          .map((d) => UserModel.fromMap(d.data(), d.id))
+    return Stream.value(
+      _mockUsers.values
+          .where((u) => u.role == AppConstants.roleTailor)
+          .where((u) => available == null || u.isAvailable == available)
           .where((u) =>
               searchName == null ||
               u.name.toLowerCase().contains(searchName.toLowerCase()))
-          .toList();
-    });
+          .toList(),
+    );
   }
 
   Future<void> updateUser(String uid, Map<String, dynamic> data) async {
-    await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .update(data);
+    final user = _mockUsers[uid];
+    if (user != null) {
+      _mockUsers[uid] = UserModel(
+        id: user.id,
+        name: data['name'] as String? ?? user.name,
+        email: user.email,
+        role: user.role,
+        phone: data['phone'] as String? ?? user.phone,
+        profileImage: data['profileImage'] as String? ?? user.profileImage,
+        createdAt: user.createdAt,
+        isAvailable: data['isAvailable'] as bool? ?? user.isAvailable,
+      );
+    }
   }
 
   // ---------- Orders ----------
   Future<String> createOrder(OrderModel order) async {
-    final ref = await _firestore
-        .collection(AppConstants.ordersCollection)
-        .add(order.toMap());
-    return ref.id;
+    final orderId = DateTime.now().millisecondsSinceEpoch.toString();
+    _mockOrders[orderId] = order;
+    return orderId;
   }
 
   Future<void> updateOrderStatus(String orderId, String status) async {
-    await _firestore
-        .collection(AppConstants.ordersCollection)
-        .doc(orderId)
-        .update({'status': status});
+    final order = _mockOrders[orderId];
+    if (order != null) {
+      _mockOrders[orderId] = OrderModel(
+        id: order.id,
+        customerId: order.customerId,
+        tailorId: order.tailorId,
+        dressType: order.dressType,
+        color: order.color,
+        measurements: order.measurements,
+        referenceImage: order.referenceImage,
+        deliveryDate: order.deliveryDate,
+        status: status,
+        price: order.price,
+        createdAt: order.createdAt,
+      );
+    }
   }
 
   Future<void> acceptOrder(String orderId, double? price) async {
-    await _firestore.collection(AppConstants.ordersCollection).doc(orderId).update({
-      'status': AppConstants.statusAccepted,
-      if (price != null) 'price': price,
-    });
+    final order = _mockOrders[orderId];
+    if (order != null) {
+      _mockOrders[orderId] = OrderModel(
+        id: order.id,
+        customerId: order.customerId,
+        tailorId: order.tailorId,
+        dressType: order.dressType,
+        color: order.color,
+        measurements: order.measurements,
+        referenceImage: order.referenceImage,
+        deliveryDate: order.deliveryDate,
+        status: AppConstants.statusAccepted,
+        price: price ?? order.price,
+        createdAt: order.createdAt,
+      );
+    }
   }
 
   Future<void> rejectOrder(String orderId) async {
-    await _firestore
-        .collection(AppConstants.ordersCollection)
-        .doc(orderId)
-        .update({'status': AppConstants.statusRejected});
+    await updateOrderStatus(orderId, AppConstants.statusRejected);
   }
 
   Stream<List<OrderModel>> streamOrdersByCustomer(String customerId) {
-    return _firestore
-        .collection(AppConstants.ordersCollection)
-        .where('customerId', isEqualTo: customerId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => OrderModel.fromMap(d.data(), d.id)).toList());
+    return Stream.value(
+      _mockOrders.values
+          .where((o) => o.customerId == customerId)
+          .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+    );
   }
 
   Stream<List<OrderModel>> streamOrdersByTailor(String tailorId) {
-    return _firestore
-        .collection(AppConstants.ordersCollection)
-        .where('tailorId', isEqualTo: tailorId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => OrderModel.fromMap(d.data(), d.id)).toList());
+    return Stream.value(
+      _mockOrders.values
+          .where((o) => o.tailorId == tailorId)
+          .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+    );
   }
 
   Future<OrderModel?> getOrder(String orderId) async {
-    final doc = await _firestore
-        .collection(AppConstants.ordersCollection)
-        .doc(orderId)
-        .get();
-    if (!doc.exists) return null;
-    return OrderModel.fromMap(doc.data()!, doc.id);
+    return _mockOrders[orderId];
   }
 
   // ---------- Reviews ----------
   Future<void> addReview(ReviewModel review) async {
-    await _firestore
-        .collection(AppConstants.reviewsCollection)
-        .doc(review.id)
-        .set(review.toMap());
+    _mockReviews[review.id] = review;
   }
 
   Stream<List<ReviewModel>> streamReviewsForTailor(String tailorId) {
-    return _firestore
-        .collection(AppConstants.reviewsCollection)
-        .where('tailorId', isEqualTo: tailorId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => ReviewModel.fromMap(d.data(), d.id)).toList());
+    return Stream.value(
+      _mockReviews.values
+          .where((r) => r.tailorId == tailorId)
+          .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+    );
   }
 
-  // ---------- Measurement profiles (stored under users/{uid}/measurement_profiles) ----------
+  // ---------- Measurement profiles ----------
   Future<void> saveMeasurementProfile(MeasurementProfileModel profile) async {
-    await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(profile.userId)
-        .collection('measurement_profiles')
-        .doc(profile.id)
-        .set(profile.toMap());
+    _mockProfiles.putIfAbsent(profile.userId, () => []);
+    final idx = _mockProfiles[profile.userId]!
+        .indexWhere((p) => p.id == profile.id);
+    if (idx >= 0) {
+      _mockProfiles[profile.userId]![idx] = profile;
+    } else {
+      _mockProfiles[profile.userId]!.add(profile);
+    }
   }
 
   Stream<List<MeasurementProfileModel>> streamMeasurementProfiles(
       String userId) {
-    return _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(userId)
-        .collection('measurement_profiles')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) => snap.docs
-            .map((d) => MeasurementProfileModel.fromMap(d.data(), d.id))
-            .toList());
+    return Stream.value(
+      (_mockProfiles[userId] ?? [])
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+    );
   }
 }
