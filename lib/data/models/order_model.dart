@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tailor_app/core/constants/app_constants.dart';
 
 /// Order model matching Firestore [orders] collection.
@@ -32,11 +33,13 @@ class OrderModel {
     DateTime deliveryDate = DateTime.now();
     final rawDelivery = map['deliveryDate'];
     if (rawDelivery != null) {
+      if (rawDelivery is Timestamp) deliveryDate = rawDelivery.toDate();
       if (rawDelivery is DateTime) deliveryDate = rawDelivery;
     }
     DateTime createdAt = DateTime.now();
     final rawCreated = map['createdAt'];
     if (rawCreated != null) {
+      if (rawCreated is Timestamp) createdAt = rawCreated.toDate();
       if (rawCreated is DateTime) createdAt = rawCreated;
     }
     final measurements = map['measurements'];
@@ -65,10 +68,10 @@ class OrderModel {
       'color': color,
       'measurements': measurements,
       'referenceImage': referenceImage,
-      'deliveryDate': deliveryDate,
+      'deliveryDate': Timestamp.fromDate(deliveryDate),
       'status': status,
       'price': price,
-      'createdAt': createdAt,
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 

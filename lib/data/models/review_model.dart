@@ -22,6 +22,7 @@ class ReviewModel {
     DateTime createdAt = DateTime.now();
     final raw = map['createdAt'];
     if (raw != null) {
+      if (raw is Timestamp) createdAt = raw.toDate();
       if (raw is DateTime) createdAt = raw;
     }
     return ReviewModel(
@@ -40,7 +41,8 @@ class ReviewModel {
       'tailorId': tailorId,
       'rating': rating,
       'comment': comment,
-      'createdAt': createdAt,
+      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 }
+import 'package:cloud_firestore/cloud_firestore.dart';

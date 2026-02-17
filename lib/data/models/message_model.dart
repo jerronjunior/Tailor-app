@@ -22,6 +22,7 @@ class MessageModel {
     DateTime timestamp = DateTime.now();
     final raw = map['timestamp'];
     if (raw != null) {
+      if (raw is Timestamp) timestamp = raw.toDate();
       if (raw is DateTime) timestamp = raw;
     }
     return MessageModel(
@@ -40,7 +41,8 @@ class MessageModel {
       'senderId': senderId,
       'message': message,
       'imageUrl': imageUrl,
-      'timestamp': timestamp,
+      'timestamp': Timestamp.fromDate(timestamp),
     };
   }
 }
+import 'package:cloud_firestore/cloud_firestore.dart';
