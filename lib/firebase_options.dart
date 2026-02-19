@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -64,5 +61,14 @@ class DefaultFirebaseOptions {
     projectId: 'tailor-app-7e9e7',
     storageBucket: 'tailor-app-7e9e7.firebasestorage.app',
     iosBundleId: 'com.tailorapp.tailorApp',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCFIRntMHFmDtgNFQVuGjN-QShEmp6kvjg',
+    appId: '1:941714203649:web:5d8c7f9e2a1b3c4d',
+    messagingSenderId: '941714203649',
+    projectId: 'tailor-app-7e9e7',
+    storageBucket: 'tailor-app-7e9e7.firebasestorage.app',
+    authDomain: 'tailor-app-7e9e7.firebaseapp.com',
   );
 }

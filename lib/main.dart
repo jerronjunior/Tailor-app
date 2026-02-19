@@ -9,7 +9,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Only initialize Firebase on supported platforms
+  // Initialize Firebase on supported platforms
   if (kIsWeb || defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
     try {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
