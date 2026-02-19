@@ -1,4 +1,4 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Message model for chat - stored in [messages] subcollection under chats.
 class MessageModel {
@@ -45,4 +45,3 @@ class MessageModel {
     };
   }
 }
-import 'package:cloud_firestore/cloud_firestore.dart';

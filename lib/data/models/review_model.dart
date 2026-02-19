@@ -1,4 +1,4 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Review model matching Firestore [reviews] collection.
 class ReviewModel {
@@ -45,4 +45,3 @@ class ReviewModel {
     };
   }
 }
-import 'package:cloud_firestore/cloud_firestore.dart';
