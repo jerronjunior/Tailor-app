@@ -13,10 +13,12 @@ void main() async {
   if (kIsWeb || defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
     try {
       await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-      // Enable offline persistence for Firestore
-      FirebaseFirestore.instance.settings = const Settings(
-        persistenceEnabled: true,
-      );
+      // Enable offline persistence (web doesn't support this, so only for mobile)
+      if (!kIsWeb) {
+        FirebaseFirestore.instance.settings = const Settings(
+          persistenceEnabled: true,
+        );
+      }
     } catch (e) {
       print('Firebase initialization error: $e');
     }
