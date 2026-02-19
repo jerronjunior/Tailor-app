@@ -110,8 +110,7 @@ class _TailorProfileView extends ConsumerWidget {
                 ),
                 FilledButton.tonalIcon(
                   onPressed: () {
-                    final uid = ref.read(currentUserProvider)?.id;
-                    if (uid != null) {
+                    final uid = ref.read(currentUserProvider)?.id; if (uid != null) {
                       final chatId = ChatService.chatId(uid, tailor.id);
                       context.push('/customer/chat/$chatId');
                     }
