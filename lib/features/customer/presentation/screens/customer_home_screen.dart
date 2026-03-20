@@ -12,7 +12,7 @@ class CustomerHomeScreen extends ConsumerWidget {
     final user = ref.watch(currentUserProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer Dashboard'),
+        title: const Text(''),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
