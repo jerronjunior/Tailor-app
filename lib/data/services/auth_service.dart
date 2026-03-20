@@ -24,7 +24,7 @@ class AuthService {
       password: password,
     );
     final user = cred.user;
-    if (user == null) throw Exception('Registration failed');
+    if (user == null) throw Exception('');
     final userModel = UserModel(
       id: user.uid,
       name: name,
