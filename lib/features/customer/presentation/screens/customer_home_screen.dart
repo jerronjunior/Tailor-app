@@ -38,7 +38,7 @@ class CustomerHomeScreen extends ConsumerWidget {
             ),
           const SizedBox(height: 16),
           _MenuTile(
-            title: '',
+            title: 'Find Tailors',
             subtitle: 'Browse and search tailors',
             icon: Icons.search,
             onTap: () => context.push(AppRoutes.tailorList),
