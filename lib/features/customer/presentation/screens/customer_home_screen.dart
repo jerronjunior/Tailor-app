@@ -45,7 +45,7 @@ class CustomerHomeScreen extends ConsumerWidget {
           ),
           _MenuTile(
             title: 'My Orders',
-            subtitle: 'View and track orders',
+            subtitle: '',
             icon: Icons.receipt_long,
             onTap: () => context.push(AppRoutes.orderHistory),
           ),
