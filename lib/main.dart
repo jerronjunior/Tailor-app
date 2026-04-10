@@ -9,23 +9,68 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Firebase on supported platforms
-  if (kIsWeb || defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
-    try {
-      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-      // Enable offline persistence (web doesn't support this, so only for mobile)
-      if (!kIsWeb) {
-        FirebaseFirestore.instance.settings = const Settings(
-          persistenceEnabled: true,
-        );
-      }
-    } catch (e) {
-      print('Firebase initialization error: $e');
-    }
+
+  runApp(
+    ProviderScope(
+      child: AppBootstrap(
+        firebaseInitialization: _initializeFirebase(),
+      ),
+    ),
+  );
+}
+
+Future<void> _initializeFirebase() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Enable offline persistence (web doesn't support this).
+  if (!kIsWeb) {
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+    );
   }
-  
-  runApp(const ProviderScope(child: TailorApp()));
+}
+
+class AppBootstrap extends StatelessWidget {
+  const AppBootstrap({
+    super.key,
+    required this.firebaseInitialization,
+  });
+
+  final Future<void> firebaseInitialization;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: firebaseInitialization,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'Firebase failed to initialize:\n${snapshot.error}',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        return const TailorApp();
+      },
+    );
+  }
 }
 
 /// Root widget - Material 3 theme and GoRouter.

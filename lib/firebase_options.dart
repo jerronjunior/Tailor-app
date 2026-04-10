@@ -30,10 +30,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -64,6 +61,16 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCFIRntMHFmDtgNFQVuGjN-QShEmp6kvjg',
+    appId: '1:941714203649:web:5d8c7f9e2a1b3c4d',
+    messagingSenderId: '941714203649',
+    projectId: 'tailor-app-7e9e7',
+    storageBucket: 'tailor-app-7e9e7.firebasestorage.app',
+    authDomain: 'tailor-app-7e9e7.firebaseapp.com',
+  );
+
+  // Temporary Windows config using the same Firebase project keys.
+  static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyCFIRntMHFmDtgNFQVuGjN-QShEmp6kvjg',
     appId: '1:941714203649:web:5d8c7f9e2a1b3c4d',
     messagingSenderId: '941714203649',
