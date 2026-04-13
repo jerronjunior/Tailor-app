@@ -41,7 +41,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                     child: Icon(
                       i < _rating ? Icons.star_rounded : Icons.star_outline_rounded,
                       size: 32,
-                      color: i < _rating ? AppColors.gold : Colors.black20,
+                      color: i < _rating ? AppColors.gold : Colors.black26,
                     ),
                   ),
                 )),
@@ -128,7 +128,7 @@ class _StarRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(5, (i) => Icon(i < rating ? Icons.star_rounded : Icons.star_outline_rounded, size: 16, color: i < rating ? AppColors.gold : Colors.black20)),
+      children: List.generate(5, (i) => Icon(i < rating ? Icons.star_rounded : Icons.star_outline_rounded, size: 16, color: i < rating ? AppColors.gold : Colors.black26)),
     );
   }
 }

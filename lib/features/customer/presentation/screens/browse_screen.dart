@@ -102,7 +102,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
 class _StyleCard extends StatelessWidget {
   final _Style style;
-  const _StyleCard({super.key, required this.style});
+  const _StyleCard({required this.style});
 
   @override
   Widget build(BuildContext context) {

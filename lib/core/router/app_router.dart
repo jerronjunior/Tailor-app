@@ -6,13 +6,13 @@ import 'package:tailor_app/features/auth/presentation/screens/login_screen.dart'
 import 'package:tailor_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:tailor_app/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:tailor_app/features/auth/providers/auth_provider.dart';
-import 'package:tailor_app/features/customer/presentation/screens/customer_home_screen.dart';
-import 'package:tailor_app/features/customer/presentation/screens/tailor_list_screen.dart';
-import 'package:tailor_app/features/customer/presentation/screens/tailor_profile_screen.dart';
-import 'package:tailor_app/features/customer/presentation/screens/place_order_screen.dart';
-import 'package:tailor_app/features/customer/presentation/screens/order_history_screen.dart';
+import 'package:tailor_app/features/customer/presentation/screens/home_screen.dart';
+import 'package:tailor_app/features/customer/presentation/screens/discover_screen.dart';
+import 'package:tailor_app/features/customer/presentation/screens/profile_screen.dart';
+import 'package:tailor_app/features/customer/presentation/screens/order_screen.dart';
+import 'package:tailor_app/features/customer/presentation/screens/track_screen.dart';
 import 'package:tailor_app/features/customer/presentation/screens/chat_screen.dart';
-import 'package:tailor_app/features/customer/presentation/screens/measurement_profiles_screen.dart';
+import 'package:tailor_app/features/customer/presentation/screens/measurements_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_home_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_orders_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_chat_screen.dart';
@@ -82,40 +82,37 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Customer routes
       GoRoute(
         path: AppRoutes.customerHome,
-        builder: (_, __) => const CustomerHomeScreen(),
+        builder: (_, __) => const HomeScreen(),
       ),
       GoRoute(
         path: AppRoutes.tailorList,
-        builder: (_, __) => const TailorListScreen(),
+        builder: (_, __) => const DiscoverScreen(),
       ),
       GoRoute(
         path: '/customer/tailor/:tailorId',
         builder: (_, state) {
-          final tailorId = state.pathParameters['tailorId']!;
-          return TailorProfileScreen(tailorId: tailorId);
+          return const ProfileScreen();
         },
       ),
       GoRoute(
         path: '/customer/place-order/:tailorId',
         builder: (_, state) {
-          final tailorId = state.pathParameters['tailorId']!;
-          return PlaceOrderScreen(tailorId: tailorId);
+          return const OrderScreen();
         },
       ),
       GoRoute(
         path: AppRoutes.orderHistory,
-        builder: (_, __) => const OrderHistoryScreen(),
+        builder: (_, __) => const TrackScreen(),
       ),
       GoRoute(
         path: '/customer/chat/:chatId',
         builder: (_, state) {
-          final chatId = state.pathParameters['chatId']!;
-          return ChatScreen(chatId: chatId);
+          return const ChatScreen();
         },
       ),
       GoRoute(
         path: AppRoutes.measurementProfiles,
-        builder: (_, __) => const MeasurementProfilesScreen(),
+        builder: (_, __) => const MeasurementsScreen(),
       ),
       // Tailor routes
       GoRoute(

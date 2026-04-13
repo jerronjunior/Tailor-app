@@ -14,7 +14,7 @@ class _FavStyle {
   final String price;
   final Color bg;
   bool saved;
-  _FavStyle({required this.emoji, required this.name, required this.price, required this.bg, this.saved = true});
+  _FavStyle({required this.emoji, required this.name, required this.price, required this.bg}) : saved = true;
 }
 
 class _FavTailor {
@@ -24,7 +24,7 @@ class _FavTailor {
   final String rating;
   final String specialty;
   bool saved;
-  _FavTailor({required this.initials, required this.avatarBg, required this.name, required this.rating, required this.specialty, this.saved = true});
+  _FavTailor({required this.initials, required this.avatarBg, required this.name, required this.rating, required this.specialty}) : saved = true;
 }
 
 class _FavouritesScreenState extends State<FavouritesScreen> {
