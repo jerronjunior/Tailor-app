@@ -1,1 +1,2 @@
-export 'screens/customer_dashboard.dart';
+// This file is used for customer app configuration
+

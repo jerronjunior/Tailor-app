@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_theme.dart';
+import 'package:tailor_app/core/theme/app_theme.dart';
 
 // ── Status Badge ──────────────────────────────────────────────
 class StatusBadge extends StatelessWidget {

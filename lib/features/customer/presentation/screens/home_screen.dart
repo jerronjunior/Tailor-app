@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_theme.dart';
+import 'package:tailor_app/features/auth/providers/auth_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.cream,
       body: SafeArea(
@@ -24,7 +26,25 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: 2),
                     Text('Welcome back — here\'s your overview', style: TextStyle(fontSize: 13, color: AppColors.taupe)),
                   ]),
-                  const AvatarCircle(initials: 'JK', size: 48, fontSize: 18),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.logout),
+                        onPressed: () async {
+                          final authService = ref.read(authServiceProvider);
+                          await authService.signOut();
+                          if (context.mounted) {
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login',
+                              (route) => false,
+                            );
+                          }
+                        },
+                        tooltip: 'Logout',
+                      ),
+                      const AvatarCircle(initials: 'JK', size: 48, fontSize: 18),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
