@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// Saved measurement profile for a customer.
 class MeasurementProfileModel {
   final String id;
@@ -20,6 +22,7 @@ class MeasurementProfileModel {
     if (raw != null) {
       if (raw is DateTime) createdAt = raw;
       if (raw is String) createdAt = DateTime.tryParse(raw) ?? createdAt;
+      if (raw is Timestamp) createdAt = raw.toDate();
     }
     final m = map['measurements'];
     Map<String, double> measurements = {};

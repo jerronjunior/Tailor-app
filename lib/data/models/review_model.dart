@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// Review model stored locally.
 class ReviewModel {
   final String id;
@@ -22,6 +24,7 @@ class ReviewModel {
     if (raw != null) {
       if (raw is DateTime) createdAt = raw;
       if (raw is String) createdAt = DateTime.tryParse(raw) ?? createdAt;
+      if (raw is Timestamp) createdAt = raw.toDate();
     }
     return ReviewModel(
       id: id,

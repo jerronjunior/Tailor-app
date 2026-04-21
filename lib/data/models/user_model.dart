@@ -1,4 +1,5 @@
 import 'package:tailor_app/core/constants/app_constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Local user model.
 class UserModel {
@@ -31,6 +32,7 @@ class UserModel {
     if (raw != null) {
       if (raw is DateTime) createdAt = raw;
       if (raw is String) createdAt = DateTime.tryParse(raw) ?? createdAt;
+      if (raw is Timestamp) createdAt = raw.toDate();
     }
     return UserModel(
       id: id,

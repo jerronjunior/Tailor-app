@@ -38,6 +38,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final user = await ref.read(authServiceProvider).signIn(
             _emailController.text.trim(),
             _passwordController.text,
+        expectedRole: widget.role,
           );
       if (!mounted) {
         return;

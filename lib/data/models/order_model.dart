@@ -1,4 +1,5 @@
 import 'package:tailor_app/core/constants/app_constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Order model stored locally.
 class OrderModel {
@@ -34,12 +35,14 @@ class OrderModel {
     if (rawDelivery != null) {
       if (rawDelivery is DateTime) deliveryDate = rawDelivery;
       if (rawDelivery is String) deliveryDate = DateTime.tryParse(rawDelivery) ?? deliveryDate;
+      if (rawDelivery is Timestamp) deliveryDate = rawDelivery.toDate();
     }
     DateTime createdAt = DateTime.now();
     final rawCreated = map['createdAt'];
     if (rawCreated != null) {
       if (rawCreated is DateTime) createdAt = rawCreated;
       if (rawCreated is String) createdAt = DateTime.tryParse(rawCreated) ?? createdAt;
+      if (rawCreated is Timestamp) createdAt = rawCreated.toDate();
     }
     final measurements = map['measurements'];
     return OrderModel(

@@ -1,12 +1,86 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tailor_app/core/constants/app_constants.dart';
 import 'package:tailor_app/data/models/user_model.dart';
-import 'package:tailor_app/data/services/local_app_store.dart';
 
-/// Handles local authentication and syncing user profile to the in-memory store.
+/// Handles Firebase authentication and syncing user profiles in Firestore.
 class AuthService {
-  final LocalAppStore _store = LocalAppStore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  UserModel? get currentUser => _store.currentUser;
-  Stream<UserModel?> get authStateChanges => _store.authStateChanges;
+  Exception _authException(FirebaseAuthException e, {String fallback = 'Authentication failed.'}) {
+    switch (e.code) {
+      case 'invalid-email':
+        return Exception('Invalid email address.');
+      case 'user-not-found':
+      case 'invalid-credential':
+        return Exception('No account found for this email. Please register first.');
+      case 'wrong-password':
+        return Exception('Incorrect password. Please try again.');
+      case 'email-already-in-use':
+        return Exception('This email is already registered. Please log in instead.');
+      case 'network-request-failed':
+        return Exception('Network error. Check your internet connection and try again.');
+      case 'too-many-requests':
+        return Exception('Too many attempts. Please wait a moment and try again.');
+      case 'user-disabled':
+        return Exception('This account has been disabled. Contact support.');
+      case 'operation-not-allowed':
+        return Exception('Email/password sign-in is not enabled in Firebase Authentication.');
+      default:
+        return Exception(e.message ?? fallback);
+    }
+  }
+
+  UserModel _profileFromAuthUser(User user, {String role = AppConstants.roleCustomer}) {
+    return UserModel(
+      id: user.uid,
+      name: (user.displayName ?? '').trim(),
+      email: (user.email ?? '').trim().toLowerCase(),
+      role: role,
+      createdAt: DateTime.now(),
+      isAvailable: role == AppConstants.roleTailor ? true : null,
+    );
+  }
+
+  Future<UserModel> _ensureUserProfile(User user, {String role = AppConstants.roleCustomer}) async {
+    final snapshot = await _userRef(user.uid).get();
+    final data = snapshot.data();
+    if (snapshot.exists && data != null) {
+      return UserModel.fromMap(data, snapshot.id);
+    }
+
+    final profile = _profileFromAuthUser(user, role: role);
+    await _userRef(user.uid).set(profile.toMap(), SetOptions(merge: true));
+    return profile;
+  }
+
+  DocumentReference<Map<String, dynamic>> _userRef(String uid) {
+    return _firestore.collection('users').doc(uid);
+  }
+
+  UserModel? get currentUser {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+    return UserModel(
+      id: user.uid,
+      name: user.displayName ?? '',
+      email: user.email ?? '',
+      role: AppConstants.roleCustomer,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  Stream<UserModel?> get authStateChanges {
+    return _auth.authStateChanges().asyncExpand((user) {
+      if (user == null) {
+        return Stream<UserModel?>.value(null);
+      }
+      return streamUserProfile(user.uid);
+    });
+  }
 
   /// Register with email/password and create user document with [role].
   Future<UserModel> register({
@@ -16,44 +90,113 @@ class AuthService {
     required String role,
     String? phone,
   }) async {
-    return _store.register(
-      email: email,
-      password: password,
-      name: name,
-      role: role,
-      phone: phone,
-    );
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+
+      final user = credential.user;
+      if (user == null) {
+        throw Exception('Unable to create account. Please try again.');
+      }
+
+      await user.updateDisplayName(name.trim());
+
+      final profile = UserModel(
+        id: user.uid,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        role: role,
+        phone: phone,
+        createdAt: DateTime.now(),
+        isAvailable: role == AppConstants.roleTailor ? true : null,
+      );
+
+      await _userRef(user.uid).set(profile.toMap());
+      return profile;
+    } on FirebaseAuthException catch (e) {
+      throw _authException(e, fallback: 'Failed to register. Please try again.');
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        throw Exception('Firestore access denied. Update Firestore security rules for users collection.');
+      }
+      throw Exception(e.message ?? 'Failed to save user profile. Please try again.');
+    }
   }
 
   /// Sign in with email and password.
-  Future<UserModel> signIn(String email, String password) async {
-    return _store.signIn(email, password);
+  Future<UserModel> signIn(
+    String email,
+    String password, {
+    String? expectedRole,
+  }) async {
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+
+      final user = credential.user;
+      if (user == null) {
+        throw Exception('Unable to sign in. Please try again.');
+      }
+
+      return _ensureUserProfile(
+        user,
+        role: expectedRole ?? AppConstants.roleCustomer,
+      );
+    } on FirebaseAuthException catch (e) {
+      throw _authException(e, fallback: 'Failed to sign in. Please try again.');
+    } on FirebaseException catch (e) {
+      if (e.code == 'permission-denied') {
+        throw Exception('Firestore access denied. Update Firestore security rules, then try again.');
+      }
+      throw Exception(e.message ?? 'Failed to load user profile. Please try again.');
+    }
   }
 
   /// Sign out.
   Future<void> signOut() async {
-    _store.signOut();
+    await _auth.signOut();
   }
 
   /// Send password reset email.
   Future<void> sendPasswordResetEmail(String email) async {
-    await _store.sendPasswordResetEmail(email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email.trim());
+    } on FirebaseAuthException catch (e) {
+      throw _authException(
+        e,
+        fallback: 'Failed to send password reset email. Please try again.',
+      );
+    }
   }
 
   /// Get the current user profile from the local store.
   Future<UserModel?> getCurrentUserProfile() async {
-    return _store.getCurrentUserProfile();
+    final user = _auth.currentUser;
+    if (user == null) return null;
+    return _ensureUserProfile(user);
   }
 
   /// Stream the current user profile.
   Stream<UserModel?> streamUserProfile(String uid) {
-    return _store.authStateChanges.map((user) => user?.id == uid ? user : null);
+    return _userRef(uid).snapshots().asyncMap((snapshot) async {
+      final data = snapshot.data();
+      if (!snapshot.exists || data == null) {
+        final user = _auth.currentUser;
+        if (user != null && user.uid == uid) {
+          return _ensureUserProfile(user);
+        }
+        return null;
+      }
+      return UserModel.fromMap(data, snapshot.id);
+    });
   }
 
   /// Update tailor availability.
   Future<void> updateAvailability(String uid, bool isAvailable) async {
-    final user = _store.getUser(uid);
-    if (user == null) return;
-    _store.updateUser(uid, {'isAvailable': isAvailable});
+    await _userRef(uid).update({'isAvailable': isAvailable});
   }
 }
