@@ -40,12 +40,12 @@ class AuthService {
     await _store.sendPasswordResetEmail(email);
   }
 
-  /// Get current user profile from Firestore.
+  /// Get the current user profile from the local store.
   Future<UserModel?> getCurrentUserProfile() async {
     return _store.getCurrentUserProfile();
   }
 
-  /// Stream current user profile.
+  /// Stream the current user profile.
   Stream<UserModel?> streamUserProfile(String uid) {
     return _store.authStateChanges.map((user) => user?.id == uid ? user : null);
   }

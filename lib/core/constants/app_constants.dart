@@ -2,7 +2,7 @@
 class AppConstants {
   AppConstants._();
 
-  // Firestore collections
+  // Local collection names
   static const String usersCollection = 'users';
   static const String ordersCollection = 'orders';
   static const String reviewsCollection = 'reviews';

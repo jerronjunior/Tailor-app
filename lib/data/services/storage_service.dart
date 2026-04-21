@@ -1,6 +1,6 @@
 import 'dart:io';
 
-/// Local file helper for uploads. Returns the local path because Firebase Storage has been removed.
+/// Local file helper for uploads. Returns the local path because uploads are not cloud-backed.
 class StorageService {
   Future<String> uploadFile({
     required String path,
