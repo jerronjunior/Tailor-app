@@ -4,17 +4,11 @@ import 'package:tailor_app/data/services/auth_service.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 
-/// Stream of auth user; we then resolve profile from Firestore.
+/// Stream of the local auth user.
 final authStateProvider = StreamProvider<UserModel?>((ref) async* {
   final auth = ref.watch(authServiceProvider);
-  await for (final user in auth.authStateChanges) {
-    if (user == null) {
-      yield null;
-      continue;
-    }
-    final profile = await auth.getCurrentUserProfile();
-    yield profile;
-  }
+  yield auth.currentUser;
+  yield* auth.authStateChanges;
 });
 
 final currentUserProvider = Provider<UserModel?>((ref) {

@@ -1,144 +1,97 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tailor_app/core/constants/app_constants.dart';
 import 'package:tailor_app/data/models/order_model.dart';
 import 'package:tailor_app/data/models/review_model.dart';
 import 'package:tailor_app/data/models/user_model.dart';
 import 'package:tailor_app/data/models/measurement_profile_model.dart';
+import 'package:tailor_app/data/services/local_app_store.dart';
 
-/// Central Firestore service for users, orders, reviews, and measurement profiles.
+/// Local in-memory data service for users, orders, reviews, and measurement profiles.
 class FirestoreService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final LocalAppStore _store = LocalAppStore.instance;
 
   // ---------- Users ----------
   Future<UserModel?> getUser(String uid) async {
-    final doc = await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .get();
-    if (!doc.exists) return null;
-    return UserModel.fromMap(doc.data()!, doc.id);
+    return _store.getUser(uid);
   }
 
   Stream<List<UserModel>> streamTailors({String? searchName, bool? available}) {
-    Query<Map<String, dynamic>> q = _firestore
-        .collection(AppConstants.usersCollection)
-        .where('role', isEqualTo: AppConstants.roleTailor);
-    if (available != null) {
-      q = q.where('isAvailable', isEqualTo: available);
-    }
-    return q.snapshots().map((snap) {
-      return snap.docs
-          .map((d) => UserModel.fromMap(d.data(), d.id))
-          .where((u) =>
-              searchName == null ||
-              u.name.toLowerCase().contains(searchName.toLowerCase()))
-          .toList();
+    List<UserModel> current() => _store.tailors(searchName: searchName, available: available);
+    return Stream<List<UserModel>>.multi((controller) {
+      controller.add(current());
+      final sub = _store.changes.listen((_) => controller.add(current()));
+      controller.onCancel = sub.cancel;
     });
   }
 
   Future<void> updateUser(String uid, Map<String, dynamic> data) async {
-    await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid)
-        .update(data);
+    await _store.updateUser(uid, data);
   }
 
   // ---------- Orders ----------
   Future<String> createOrder(OrderModel order) async {
-    final ref = await _firestore
-        .collection(AppConstants.ordersCollection)
-        .add(order.toMap());
-    return ref.id;
+    return _store.createOrder(order);
   }
 
   Future<void> updateOrderStatus(String orderId, String status) async {
-    await _firestore
-        .collection(AppConstants.ordersCollection)
-        .doc(orderId)
-        .update({'status': status});
+    _store.updateOrderStatus(orderId, status);
   }
 
   Future<void> acceptOrder(String orderId, double? price) async {
-    await _firestore.collection(AppConstants.ordersCollection).doc(orderId).update({
-      'status': AppConstants.statusAccepted,
-      if (price != null) 'price': price,
-    });
+    _store.acceptOrder(orderId, price);
   }
 
   Future<void> rejectOrder(String orderId) async {
-    await _firestore
-        .collection(AppConstants.ordersCollection)
-        .doc(orderId)
-        .update({'status': AppConstants.statusRejected});
+    _store.rejectOrder(orderId);
   }
 
   Stream<List<OrderModel>> streamOrdersByCustomer(String customerId) {
-    return _firestore
-        .collection(AppConstants.ordersCollection)
-        .where('customerId', isEqualTo: customerId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => OrderModel.fromMap(d.data(), d.id)).toList());
+    List<OrderModel> current() => _store.ordersByCustomer(customerId);
+    return Stream<List<OrderModel>>.multi((controller) {
+      controller.add(current());
+      final sub = _store.changes.listen((_) => controller.add(current()));
+      controller.onCancel = sub.cancel;
+    });
   }
 
   Stream<List<OrderModel>> streamOrdersByTailor(String tailorId) {
-    return _firestore
-        .collection(AppConstants.ordersCollection)
-        .where('tailorId', isEqualTo: tailorId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => OrderModel.fromMap(d.data(), d.id)).toList());
+    List<OrderModel> current() => _store.ordersByTailor(tailorId);
+    return Stream<List<OrderModel>>.multi((controller) {
+      controller.add(current());
+      final sub = _store.changes.listen((_) => controller.add(current()));
+      controller.onCancel = sub.cancel;
+    });
   }
 
   Future<OrderModel?> getOrder(String orderId) async {
-    final doc = await _firestore
-        .collection(AppConstants.ordersCollection)
-        .doc(orderId)
-        .get();
-    if (!doc.exists) return null;
-    return OrderModel.fromMap(doc.data()!, doc.id);
+    return _store.getOrder(orderId);
   }
 
   // ---------- Reviews ----------
   Future<void> addReview(ReviewModel review) async {
-    await _firestore
-        .collection(AppConstants.reviewsCollection)
-        .doc(review.id)
-        .set(review.toMap());
+    _store.addReview(review);
   }
 
   Stream<List<ReviewModel>> streamReviewsForTailor(String tailorId) {
-    return _firestore
-        .collection(AppConstants.reviewsCollection)
-        .where('tailorId', isEqualTo: tailorId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => ReviewModel.fromMap(d.data(), d.id)).toList());
+    List<ReviewModel> current() => _store.reviewsForTailor(tailorId);
+    return Stream<List<ReviewModel>>.multi((controller) {
+      controller.add(current());
+      final sub = _store.changes.listen((_) => controller.add(current()));
+      controller.onCancel = sub.cancel;
+    });
   }
 
   // ---------- Measurement profiles (stored under users/{uid}/measurement_profiles) ----------
   Future<void> saveMeasurementProfile(MeasurementProfileModel profile) async {
-    await _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(profile.userId)
-        .collection('measurement_profiles')
-        .doc(profile.id)
-        .set(profile.toMap());
+    _store.saveMeasurementProfile(profile);
   }
 
   Stream<List<MeasurementProfileModel>> streamMeasurementProfiles(
       String userId) {
-    return _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(userId)
-        .collection('measurement_profiles')
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snap) => snap.docs
-            .map((d) => MeasurementProfileModel.fromMap(d.data(), d.id))
-            .toList());
+    List<MeasurementProfileModel> current() => _store.measurementProfilesForUser(userId);
+    return Stream<List<MeasurementProfileModel>>.multi((controller) {
+      controller.add(current());
+      final sub = _store.changes.listen((_) => controller.add(current()));
+      controller.onCancel = sub.cancel;
+    });
   }
 }

@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-/// Message model for chat - stored in [messages] subcollection under chats.
+/// Message model for chat stored locally.
 class MessageModel {
   final String id;
   final String chatId;
@@ -22,8 +20,8 @@ class MessageModel {
     DateTime timestamp = DateTime.now();
     final raw = map['timestamp'];
     if (raw != null) {
-      if (raw is Timestamp) timestamp = raw.toDate();
       if (raw is DateTime) timestamp = raw;
+      if (raw is String) timestamp = DateTime.tryParse(raw) ?? timestamp;
     }
     return MessageModel(
       id: id,
@@ -41,7 +39,7 @@ class MessageModel {
       'senderId': senderId,
       'message': message,
       'imageUrl': imageUrl,
-      'timestamp': Timestamp.fromDate(timestamp),
+      'timestamp': timestamp,
     };
   }
 }

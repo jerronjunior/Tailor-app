@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-/// Saved measurement profile for a customer (optional subcollection or separate collection).
+/// Saved measurement profile for a customer.
 class MeasurementProfileModel {
   final String id;
   final String userId;
@@ -20,8 +18,8 @@ class MeasurementProfileModel {
     DateTime createdAt = DateTime.now();
     final raw = map['createdAt'];
     if (raw != null) {
-      if (raw is Timestamp) createdAt = raw.toDate();
       if (raw is DateTime) createdAt = raw;
+      if (raw is String) createdAt = DateTime.tryParse(raw) ?? createdAt;
     }
     final m = map['measurements'];
     Map<String, double> measurements = {};
@@ -45,7 +43,7 @@ class MeasurementProfileModel {
       'userId': userId,
       'name': name,
       'measurements': measurements,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'createdAt': createdAt,
     };
   }
 }

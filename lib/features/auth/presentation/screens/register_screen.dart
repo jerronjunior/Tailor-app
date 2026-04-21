@@ -43,7 +43,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       _isLoading = true;
     });
     try {
-      await ref.read(authServiceProvider).register(
+      final user = await ref.read(authServiceProvider).register(
             email: _emailController.text.trim(),
             password: _passwordController.text,
             name: _nameController.text.trim(),
@@ -53,7 +53,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 : _phoneController.text.trim(),
           );
       if (mounted) {
-        if (ref.read(currentUserProvider)?.isCustomer == true) {
+        if (user.isCustomer) {
           context.go(AppRoutes.customerHome);
         } else {
           context.go(AppRoutes.tailorHome);
