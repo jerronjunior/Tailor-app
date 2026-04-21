@@ -19,10 +19,15 @@ class AuthService {
     required String role,
     String? phone,
   }) async {
-    final cred = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    late final UserCredential cred;
+    try {
+      cred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_mapAuthError(e));
+    }
     final user = cred.user;
     if (user == null) throw Exception('Registration failed');
     final userModel = UserModel(
@@ -42,10 +47,15 @@ class AuthService {
 
   /// Sign in with email and password.
   Future<User?> signIn(String email, String password) async {
-    final cred = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    late final UserCredential cred;
+    try {
+      cred = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_mapAuthError(e));
+    }
     return cred.user;
   }
 
@@ -56,7 +66,11 @@ class AuthService {
 
   /// Send password reset email.
   Future<void> sendPasswordResetEmail(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_mapAuthError(e));
+    }
   }
 
   /// Get current user profile from Firestore.
@@ -89,5 +103,32 @@ class AuthService {
         .collection(AppConstants.usersCollection)
         .doc(uid)
         .update({'isAvailable': isAvailable});
+  }
+
+  String _mapAuthError(FirebaseAuthException error) {
+    switch (error.code) {
+      case 'invalid-email':
+        return 'Enter a valid email address.';
+      case 'user-not-found':
+        return 'No account found for that email. Please register first.';
+      case 'wrong-password':
+        return 'Incorrect password. Please try again.';
+      case 'email-already-in-use':
+        return 'That email is already registered. Please log in instead.';
+      case 'weak-password':
+        return 'Password is too weak. Use at least 6 characters.';
+      case 'user-disabled':
+        return 'This account has been disabled.';
+      case 'too-many-requests':
+        return 'Too many attempts. Try again later.';
+      case 'network-request-failed':
+        return 'Network error. Check your connection and try again.';
+      case 'invalid-credential':
+        return 'Firebase rejected the credential. If you are logging in, check your email/password. If you are registering, make sure Email/Password sign-in is enabled in Firebase and the app is configured for this platform.';
+      case 'operation-not-allowed':
+        return 'Email/password sign-in is not enabled in Firebase.';
+      default:
+        return error.message ?? 'Authentication failed. Please try again.';
+    }
   }
 }
