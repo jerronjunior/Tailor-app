@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tailor_app/core/router/app_router.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_theme.dart';
 import 'package:tailor_app/features/auth/providers/auth_provider.dart';
@@ -21,7 +23,7 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+                  const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text('Hi Jerron 👋', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.thread)),
                     SizedBox(height: 2),
                     Text('Welcome back — here\'s your overview', style: TextStyle(fontSize: 13, color: AppColors.taupe)),
@@ -73,17 +75,17 @@ class HomeScreen extends ConsumerWidget {
                 runSpacing: 10,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () => context.push(AppRoutes.tailorList),
                     icon: const Icon(Icons.add, size: 16),
                     label: const Text('Place New Order'),
                   ),
                   OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () => context.push(AppRoutes.measurementProfiles),
                     icon: const Icon(Icons.straighten, size: 16),
                     label: const Text('Add Measurements'),
                   ),
                   OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () => context.push(AppRoutes.orderHistory),
                     icon: const Icon(Icons.local_shipping_outlined, size: 16),
                     label: const Text('Track Order'),
                   ),
