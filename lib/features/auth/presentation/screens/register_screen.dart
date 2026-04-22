@@ -57,13 +57,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             : _phoneController.text.trim(),
       );
 
-      // Ensure the newly registered user is authenticated before routing.
+      // Sign in the newly registered user
       final user = await auth.signIn(
         email,
         password,
         expectedRole: widget.role,
       );
 
+      // Wait a moment for the auth state to propagate through Riverpod
+      if (mounted) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+
+      // Navigate to appropriate home based on user role
       if (mounted) {
         if (user.isCustomer) {
           context.go(AppRoutes.customerHome);
