@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tailor_app/core/constants/app_constants.dart';
@@ -16,6 +17,7 @@ import 'package:tailor_app/features/customer/presentation/screens/measurements_s
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_home_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_orders_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_chat_screen.dart';
+import 'dart:async';
 
 /// Route names
 class AppRoutes {
@@ -35,11 +37,32 @@ class AppRoutes {
   static const String tailorChat = '/tailor/chat/:chatId';
 }
 
+/// A [ChangeNotifier] that informs [GoRouter] when to refresh its routes
+/// based on a [Stream].
+class GoRouterRefreshStream extends ChangeNotifier {
+  late final StreamSubscription<dynamic> _subscription;
+
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
+  final authStream = ref.watch(authStateProvider.stream);
   return GoRouter(
     initialLocation: AppRoutes.roleSelect,
+    refreshListenable: GoRouterRefreshStream(authStream),
     redirect: (context, state) {
+      final authState = ref.read(authStateProvider);
       final isLoggedIn = authState.valueOrNull != null;
       final userProfile = authState.valueOrNull;
       final isAuthRoute = state.matchedLocation == AppRoutes.roleSelect ||

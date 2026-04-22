@@ -54,6 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         await ref.read(authServiceProvider).signOut();
         return;
       }
+      await Future<void>.delayed(const Duration(milliseconds: 500));
       if (user.isCustomer) {
         context.go(AppRoutes.customerHome);
       } else {
