@@ -9,8 +9,27 @@ import 'package:tailor_app/features/auth/providers/auth_provider.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  String _firstName(String? fullName) {
+    final safeName = fullName?.trim();
+    if (safeName == null || safeName.isEmpty) return 'there';
+    return safeName.split(RegExp(r'\s+')).first;
+  }
+
+  String _initials(String? fullName) {
+    final safeName = fullName?.trim();
+    if (safeName == null || safeName.isEmpty) return 'NA';
+    final parts = safeName.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return 'NA';
+    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
+    return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
+    final firstName = _firstName(currentUser?.name);
+    final initials = _initials(currentUser?.name);
+
     return Scaffold(
       backgroundColor: AppColors.cream,
       body: SafeArea(
@@ -23,10 +42,10 @@ class HomeScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('Hi Jerron 👋', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.thread)),
-                    SizedBox(height: 2),
-                    Text('Welcome back — here\'s your overview', style: TextStyle(fontSize: 13, color: AppColors.taupe)),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('Hi $firstName 👋', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.thread)),
+                    const SizedBox(height: 2),
+                    const Text('Welcome back — here\'s your overview', style: TextStyle(fontSize: 13, color: AppColors.taupe)),
                   ]),
                   Row(
                     children: [
@@ -44,7 +63,7 @@ class HomeScreen extends ConsumerWidget {
                         },
                         tooltip: 'Logout',
                       ),
-                      const AvatarCircle(initials: 'JK', size: 48, fontSize: 18),
+                      AvatarCircle(initials: initials, size: 48, fontSize: 18),
                     ],
                   ),
                 ],

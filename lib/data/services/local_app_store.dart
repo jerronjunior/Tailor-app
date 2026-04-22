@@ -50,7 +50,7 @@ class LocalAppStore {
       password: 'password123',
       user: UserModel(
         id: 'customer-1',
-        name: 'Jerron Customer',
+        name: 'Demo Customer',
         email: 'customer@example.com',
         role: AppConstants.roleCustomer,
         phone: '555-0101',
