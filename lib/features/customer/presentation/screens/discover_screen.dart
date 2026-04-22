@@ -55,7 +55,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             child: FeatureImageBanner(
-              imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=1200&h=800&fit=crop',
+              imageUrl: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=1200&h=800&fit=crop',
               eyebrow: 'Nearby studios',
               title: 'Find a tailor whose style matches yours.',
               subtitle: 'Browse carefully curated tailors and see who is closest, fastest, and best rated.',

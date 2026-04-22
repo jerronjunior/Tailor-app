@@ -110,8 +110,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 10),
                   FeatureImageBanner(
                     imageUrl: isTailor
-                        ? 'https://images.unsplash.com/photo-1620331379026-2e408e84d8af?w=1200&h=800&fit=crop'
-                        : 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop',
+                        ? 'https://images.unsplash.com/photo-1488162521350-029120c2e3a7?w=1200&h=800&fit=crop'
+                        : 'https://images.unsplash.com/photo-1539008588435-666190588422?w=1200&h=800&fit=crop',
                     eyebrow: isTailor ? 'Tailor Portal' : 'Customer Portal',
                     title: isTailor ? 'Manage every order beautifully.' : 'Welcome back to your style studio.',
                     subtitle: isTailor

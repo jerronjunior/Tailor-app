@@ -129,8 +129,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   const SizedBox(height: 10),
                   FeatureImageBanner(
                     imageUrl: isTailor
-                        ? 'https://images.unsplash.com/photo-1527958420442-6a6f75b9e0fe?w=1200&h=800&fit=crop'
-                        : 'https://images.unsplash.com/photo-1483389127117-b6a2102724ae?w=1200&h=800&fit=crop',
+                        ? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop'
+                        : 'https://images.unsplash.com/photo-1539008588435-666190588422?w=1200&h=800&fit=crop',
                     eyebrow: isTailor ? 'Create Tailor Account' : 'Create Customer Account',
                     title: isTailor ? 'Turn your craft into a polished studio.' : 'Start your next outfit with one account.',
                     subtitle: isTailor

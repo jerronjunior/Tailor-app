@@ -28,7 +28,7 @@ class RoleSelectScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 FeatureImageBanner(
-                  imageUrl: 'https://images.unsplash.com/photo-1515562141207-6811bcb33e20?w=1200&h=800&fit=crop',  // Elegant fashion dress
+                  imageUrl: 'https://images.unsplash.com/photo-1506629082632-2cecf5b67c9b?w=1200&h=800&fit=crop',  // Elegant dress design
                   eyebrow: 'Tailored Fashion',
                   title: 'Dress with confidence.',
                   subtitle: 'A modern tailoring experience for customers and tailors in one place.',

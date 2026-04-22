@@ -140,9 +140,9 @@ class HomeScreen extends ConsumerWidget {
                     separatorBuilder: (_, __) => const SizedBox(width: 12),
                     itemBuilder: (_, index) {
                       final images = [
-                        'https://images.unsplash.com/photo-1536882240095-0379873feb4e?w=900&h=600&fit=crop',  // Wedding dress design
-                        'https://images.unsplash.com/photo-1509361811494-5eaf06c0d960?w=900&h=600&fit=crop',  // Casual wear
-                        'https://images.unsplash.com/photo-1534218665767-13a6a7b91bb8?w=900&h=600&fit=crop',  // Professional office wear
+                        'https://images.unsplash.com/photo-1595777707802-6b2e5b60b2f5?w=900&h=600&fit=crop',  // Elegant wedding dress
+                        'https://images.unsplash.com/photo-1567505437051-f0a38e5f1c94?w=900&h=600&fit=crop',  // Casual dress style
+                        'https://images.unsplash.com/photo-1530268729831-4be0904fb510?w=900&h=600&fit=crop',  // Professional dress
                       ];
                       final titles = ['Wedding Design', 'Casual Wear', 'Office Attire'];
                       return Container(

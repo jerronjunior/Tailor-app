@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           FeatureImageBanner(
-            imageUrl: 'https://images.unsplash.com/photo-1581044777550-4cffb3a56fe8?w=1200&h=800&fit=crop',
+            imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop',
             eyebrow: 'Your profile',
             title: 'Keep your fit details stylish and organized.',
             subtitle: 'Save your measurements, addresses, and payment options in one polished profile.',
