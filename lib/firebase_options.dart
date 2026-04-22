@@ -41,13 +41,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBhwP5TEySO_19hMeqmKMOoXFdNP3xLfws',
-    appId: '1:941714203649:web:1a4b7fa9b369c845548c00',
-    messagingSenderId: '941714203649',
-    projectId: 'tailor-app-7e9e7',
-    authDomain: 'tailor-app-7e9e7.firebaseapp.com',
-    storageBucket: 'tailor-app-7e9e7.firebasestorage.app',
-    measurementId: 'G-V03XK42YDR',
+    apiKey: 'AIzaSyCknzPxAyOWd-rfFjO1QwObcY09QfxjcV8',
+    appId: '1:867386599382:web:dec93467ae7f59e8d32677',
+    messagingSenderId: '867386599382',
+    projectId: 'tailor-app-8f409',
+    authDomain: 'tailor-app-8f409.firebaseapp.com',
+    storageBucket: 'tailor-app-8f409.firebasestorage.app',
+    measurementId: 'G-R4JG32Z3TE',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -59,26 +59,26 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA7bfjpKoG-P7Ukgu9QUed5FOXfY9O5Upg',
-    appId: '1:941714203649:ios:88a22d875b69022d548c00',
-    messagingSenderId: '941714203649',
-    projectId: 'tailor-app-7e9e7',
-    storageBucket: 'tailor-app-7e9e7.firebasestorage.app',
+    apiKey: 'AIzaSyDgMJiFEvL6Gir6LlxOOPs3p-YX3IYZSZo',
+    appId: '1:867386599382:ios:df5101269897b395d32677',
+    messagingSenderId: '867386599382',
+    projectId: 'tailor-app-8f409',
+    storageBucket: 'tailor-app-8f409.firebasestorage.app',
     iosBundleId: 'com.tailorapp.tailorApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA7bfjpKoG-P7Ukgu9QUed5FOXfY9O5Upg',
-    appId: '1:941714203649:ios:88a22d875b69022d548c00',
-    messagingSenderId: '941714203649',
-    projectId: 'tailor-app-7e9e7',
-    storageBucket: 'tailor-app-7e9e7.firebasestorage.app',
+    apiKey: 'AIzaSyDgMJiFEvL6Gir6LlxOOPs3p-YX3IYZSZo',
+    appId: '1:867386599382:ios:df5101269897b395d32677',
+    messagingSenderId: '867386599382',
+    projectId: 'tailor-app-8f409',
+    storageBucket: 'tailor-app-8f409.firebasestorage.app',
     iosBundleId: 'com.tailorapp.tailorApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCaHFpYyn7kNSKKccZOZQnT4ozec1OCSQw',
-    appId: '1:867386599382:android:cc7e1b5c5bca835cd32677',
+    apiKey: 'AIzaSyCknzPxAyOWd-rfFjO1QwObcY09QfxjcV8',
+    appId: '1:867386599382:web:dec93467ae7f59e8d32677',
     messagingSenderId: '867386599382',
     projectId: 'tailor-app-8f409',
     storageBucket: 'tailor-app-8f409.firebasestorage.app',

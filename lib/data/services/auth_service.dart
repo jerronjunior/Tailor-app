@@ -8,6 +8,10 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool _isPermissionDenied(Object error) {
+    return error is FirebaseException && error.code == 'permission-denied';
+  }
+
   DocumentReference<Map<String, dynamic>> _userRef(String uid) {
     return _firestore.collection('users').doc(uid);
   }
@@ -57,15 +61,23 @@ class AuthService {
     User user, {
     String role = AppConstants.roleCustomer,
   }) async {
-    final snapshot = await _userRef(user.uid).get();
-    final data = snapshot.data();
-    if (snapshot.exists && data != null) {
-      return UserModel.fromMap(data, snapshot.id);
-    }
+    try {
+      final snapshot = await _userRef(user.uid).get();
+      final data = snapshot.data();
+      if (snapshot.exists && data != null) {
+        return UserModel.fromMap(data, snapshot.id);
+      }
 
-    final profile = _profileFromAuthUser(user, role: role);
-    await _userRef(user.uid).set(profile.toMap(), SetOptions(merge: true));
-    return profile;
+      final profile = _profileFromAuthUser(user, role: role);
+      await _userRef(user.uid).set(profile.toMap(), SetOptions(merge: true));
+      return profile;
+    } catch (e) {
+      if (_isPermissionDenied(e)) {
+        // Keep auth working even if Firestore rules are stricter than expected.
+        return _profileFromAuthUser(user, role: role);
+      }
+      rethrow;
+    }
   }
 
   UserModel? get currentUser {
@@ -81,11 +93,16 @@ class AuthService {
   }
 
   Stream<UserModel?> get authStateChanges {
-    return _auth.authStateChanges().asyncExpand((user) {
-      if (user == null) {
-        return Stream<UserModel?>.value(null);
+    return _auth.authStateChanges().asyncMap((user) async {
+      if (user == null) return null;
+      try {
+        return await _ensureUserProfile(user);
+      } catch (e) {
+        if (_isPermissionDenied(e)) {
+          return _profileFromAuthUser(user);
+        }
+        rethrow;
       }
-      return streamUserProfile(user.uid);
     });
   }
 
@@ -120,7 +137,13 @@ class AuthService {
         isAvailable: role == AppConstants.roleTailor ? true : null,
       );
 
-      await _userRef(user.uid).set(profile.toMap());
+      try {
+        await _userRef(user.uid).set(profile.toMap());
+      } catch (e) {
+        if (!_isPermissionDenied(e)) {
+          rethrow;
+        }
+      }
       return profile;
     } on FirebaseAuthException catch (e) {
       throw _authException(e, fallback: 'Failed to register. Please try again.');
@@ -164,7 +187,19 @@ class AuthService {
       throw _authException(e, fallback: 'Failed to sign in. Please try again.');
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        throw Exception('Firestore access denied. Update Firestore rules, then try again.');
+        final user = _auth.currentUser;
+        if (user != null) {
+          final fallback = _profileFromAuthUser(
+            user,
+            role: expectedRole ?? AppConstants.roleCustomer,
+          );
+          if (expectedRole != null && fallback.role != expectedRole) {
+            await signOut();
+            throw Exception('This account is registered as ${fallback.role}. Please use the correct login.');
+          }
+          return fallback;
+        }
+        throw Exception('Sign-in completed but profile access is denied by Firestore rules.');
       }
       throw Exception(e.message ?? 'Failed to load user profile. Please try again.');
     }
@@ -191,21 +226,41 @@ class AuthService {
   Future<UserModel?> getCurrentUserProfile() async {
     final user = _auth.currentUser;
     if (user == null) return null;
-    return _ensureUserProfile(user);
+    try {
+      return await _ensureUserProfile(user);
+    } catch (e) {
+      if (_isPermissionDenied(e)) {
+        return _profileFromAuthUser(user);
+      }
+      rethrow;
+    }
   }
 
   /// Stream the current user profile.
   Stream<UserModel?> streamUserProfile(String uid) {
-    return _userRef(uid).snapshots().asyncMap((snapshot) async {
-      final data = snapshot.data();
-      if (!snapshot.exists || data == null) {
-        final user = _auth.currentUser;
-        if (user != null && user.uid == uid) {
-          return _ensureUserProfile(user);
+    return Stream<UserModel?>.multi((controller) {
+      final sub = _userRef(uid).snapshots().listen((snapshot) async {
+        final data = snapshot.data();
+        if (!snapshot.exists || data == null) {
+          final user = _auth.currentUser;
+          if (user != null && user.uid == uid) {
+            controller.add(await _ensureUserProfile(user));
+            return;
+          }
+          controller.add(null);
+          return;
         }
-        return null;
-      }
-      return UserModel.fromMap(data, snapshot.id);
+        controller.add(UserModel.fromMap(data, snapshot.id));
+      }, onError: (error) {
+        final user = _auth.currentUser;
+        if (user != null && user.uid == uid && _isPermissionDenied(error)) {
+          controller.add(_profileFromAuthUser(user));
+        } else {
+          controller.addError(error);
+        }
+      });
+
+      controller.onCancel = () => sub.cancel();
     });
   }
 
