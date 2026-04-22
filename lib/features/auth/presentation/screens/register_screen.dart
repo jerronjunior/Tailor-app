@@ -43,15 +43,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       _isLoading = true;
     });
     try {
-      final user = await ref.read(authServiceProvider).register(
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-            name: _nameController.text.trim(),
-            role: widget.role,
-            phone: _phoneController.text.trim().isEmpty
-                ? null
-                : _phoneController.text.trim(),
-          );
+      final auth = ref.read(authServiceProvider);
+      final email = _emailController.text.trim();
+      final password = _passwordController.text;
+
+      await auth.register(
+        email: email,
+        password: password,
+        name: _nameController.text.trim(),
+        role: widget.role,
+        phone: _phoneController.text.trim().isEmpty
+            ? null
+            : _phoneController.text.trim(),
+      );
+
+      // Ensure the newly registered user is authenticated before routing.
+      final user = await auth.signIn(
+        email,
+        password,
+        expectedRole: widget.role,
+      );
+
       if (mounted) {
         if (user.isCustomer) {
           context.go(AppRoutes.customerHome);
