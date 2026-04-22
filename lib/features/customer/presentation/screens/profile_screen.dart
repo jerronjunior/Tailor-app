@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           FeatureImageBanner(
-            imageUrl: 'https://picsum.photos/seed/profile-hero/1200/800',
+            imageUrl: 'https://images.unsplash.com/photo-1581044777550-4cffb3a56fe8?w=1200&h=800&fit=crop',
             eyebrow: 'Your profile',
             title: 'Keep your fit details stylish and organized.',
             subtitle: 'Save your measurements, addresses, and payment options in one polished profile.',
@@ -43,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
                     image: const DecorationImage(
-                      image: NetworkImage('https://picsum.photos/seed/profile-avatar/400/400'),
+                      image: NetworkImage('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.10), blurRadius: 14, offset: const Offset(0, 6))],

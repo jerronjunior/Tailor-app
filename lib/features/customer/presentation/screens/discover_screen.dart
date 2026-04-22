@@ -55,7 +55,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             child: FeatureImageBanner(
-              imageUrl: 'https://picsum.photos/seed/discover-hero/1200/800',
+              imageUrl: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=1200&h=800&fit=crop',
               eyebrow: 'Nearby studios',
               title: 'Find a tailor whose style matches yours.',
               subtitle: 'Browse carefully curated tailors and see who is closest, fastest, and best rated.',
@@ -163,14 +163,14 @@ class _TailorListCard extends StatelessWidget {
             image: DecorationImage(
               image: NetworkImage(
                 tailor.initials == 'RK'
-                ? 'https://picsum.photos/seed/tailor-rk/300/300'
+                ? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop'
                 : tailor.initials == 'PS'
-                  ? 'https://picsum.photos/seed/tailor-ps/300/300'
+                  ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop'
                   : tailor.initials == 'AM'
-                    ? 'https://picsum.photos/seed/tailor-am/300/300'
+                    ? 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop'
                     : tailor.initials == 'SK'
-                      ? 'https://picsum.photos/seed/tailor-sk/300/300'
-                      : 'https://picsum.photos/seed/tailor-default/300/300',
+                      ? 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop'
+                      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
               ),
               fit: BoxFit.cover,
             ),

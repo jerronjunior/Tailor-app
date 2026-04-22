@@ -50,7 +50,7 @@ class HomeScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FeatureImageBanner(
-                  imageUrl: 'https://picsum.photos/seed/home-hero/1200/800',
+                  imageUrl: 'https://images.unsplash.com/photo-1609208584370-f91f44a008ad?w=1200&h=800&fit=crop',
                   eyebrow: 'Your dashboard',
                   title: 'Hi $firstName, your next look is waiting.',
                   subtitle: 'Browse inspiration, manage orders, and keep every measurement in one place.',
@@ -140,11 +140,11 @@ class HomeScreen extends ConsumerWidget {
                     separatorBuilder: (_, __) => const SizedBox(width: 12),
                     itemBuilder: (_, index) {
                       final images = [
-                        'https://picsum.photos/seed/style-1/900/600',
-                        'https://picsum.photos/seed/style-2/900/600',
-                        'https://picsum.photos/seed/style-3/900/600',
+                        'https://images.unsplash.com/photo-1536882240095-0379873feb4e?w=900&h=600&fit=crop',  // Wedding dress design
+                        'https://images.unsplash.com/photo-1509361811494-5eaf06c0d960?w=900&h=600&fit=crop',  // Casual wear
+                        'https://images.unsplash.com/photo-1534218665767-13a6a7b91bb8?w=900&h=600&fit=crop',  // Professional office wear
                       ];
-                      final titles = ['Wedding edit', 'Casual edit', 'Office edit'];
+                      final titles = ['Wedding Design', 'Casual Wear', 'Office Attire'];
                       return Container(
                         width: 210,
                         decoration: BoxDecoration(

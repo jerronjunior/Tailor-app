@@ -28,7 +28,7 @@ class RoleSelectScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 FeatureImageBanner(
-                  imageUrl: 'https://picsum.photos/seed/customer-hero/1200/800',
+                  imageUrl: 'https://images.unsplash.com/photo-1515562141207-6811bcb33e20?w=1200&h=800&fit=crop',  // Elegant fashion dress
                   eyebrow: 'Tailored Fashion',
                   title: 'Dress with confidence.',
                   subtitle: 'A modern tailoring experience for customers and tailors in one place.',
@@ -69,7 +69,7 @@ class RoleSelectScreen extends StatelessWidget {
                   title: 'Customer',
                   subtitle: 'Find tailors, place orders, track work, and chat in real time.',
                   icon: Icons.person_rounded,
-                  imageUrl: 'https://picsum.photos/seed/customer-card/900/600',
+                  imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=900&h=600&fit=crop',
                   onLogin: () => context.push('${AppRoutes.login}?role=${AppConstants.roleCustomer}'),
                   onRegister: () => context.push('${AppRoutes.register}?role=${AppConstants.roleCustomer}'),
                 ),
@@ -78,7 +78,7 @@ class RoleSelectScreen extends StatelessWidget {
                   title: 'Tailor',
                   subtitle: 'Manage orders, update progress, and grow your business.',
                   icon: Icons.design_services_rounded,
-                  imageUrl: 'https://picsum.photos/seed/tailor-card/900/600',
+                  imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=900&h=600&fit=crop',
                   onLogin: () => context.push('${AppRoutes.login}?role=${AppConstants.roleTailor}'),
                   onRegister: () => context.push('${AppRoutes.register}?role=${AppConstants.roleTailor}'),
                 ),
