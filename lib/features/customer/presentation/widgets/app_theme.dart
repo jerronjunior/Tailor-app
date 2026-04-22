@@ -22,14 +22,22 @@ class AvatarCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [bg, AppColors.thread],
+        ),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 14, offset: const Offset(0, 6))],
+      ),
       alignment: Alignment.center,
       child: Text(
         initials,
         style: TextStyle(
           color: fg,
           fontSize: fontSize,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w800,
         ),
       ),
     );
@@ -44,13 +52,14 @@ class SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 10, top: 4),
       child: Text(
-        text,
+        text.toUpperCase(),
         style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          color: AppColors.thread,
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          color: AppColors.silk,
+          letterSpacing: 1.4,
         ),
       ),
     );
@@ -71,8 +80,9 @@ class AppCard extends StatelessWidget {
       padding: padding ?? const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.5),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.black.withOpacity(0.05), width: 1),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 16, offset: const Offset(0, 8))],
       ),
       child: child,
     );
@@ -86,8 +96,8 @@ class AppDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 14),
-      height: 0.5,
-      color: Colors.black.withOpacity(0.12),
+      height: 1,
+      color: Colors.black.withOpacity(0.08),
     );
   }
 }
@@ -113,6 +123,10 @@ class GoldButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.gold,
         foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -136,8 +150,9 @@ class StatCard extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.5),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black.withOpacity(0.05), width: 1),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 18, offset: const Offset(0, 8))],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +169,7 @@ class StatCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(fontSize: 10, color: AppColors.taupe),
+            style: const TextStyle(fontSize: 10, color: AppColors.taupe, height: 1.2),
             textAlign: TextAlign.center,
           ),
         ],
@@ -242,8 +257,9 @@ class OrderTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.5),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.black.withOpacity(0.05), width: 1),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 14, offset: const Offset(0, 8))],
       ),
       child: Row(
         children: [

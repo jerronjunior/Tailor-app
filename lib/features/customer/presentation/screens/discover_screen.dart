@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_theme.dart';
+import 'package:tailor_app/widgets/feature_image_banner.dart';
 
 class _TailorCard {
   final String initials;
@@ -51,6 +52,17 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       appBar: AppBar(title: const Text('Discover Tailors'), backgroundColor: AppColors.thread),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: FeatureImageBanner(
+              imageUrl: 'https://picsum.photos/seed/discover-hero/1200/800',
+              eyebrow: 'Nearby studios',
+              title: 'Find a tailor whose style matches yours.',
+              subtitle: 'Browse carefully curated tailors and see who is closest, fastest, and best rated.',
+              height: 200,
+            ),
+          ),
+          const SizedBox(height: 12),
           // ── Filters ───────────────────────────────────────────
           Container(
             color: Colors.white,
@@ -83,7 +95,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           // ── Map placeholder ───────────────────────────────────
           Container(
             height: 140,
-            margin: const EdgeInsets.all(16),
+            margin: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 begin: Alignment.topLeft, end: Alignment.bottomRight,
@@ -143,7 +155,27 @@ class _TailorListCard extends StatelessWidget {
         border: Border.all(color: Colors.black.withOpacity(0.08), width: 0.5),
       ),
       child: Row(children: [
-        AvatarCircle(initials: tailor.initials, bg: tailor.avatarBg, fg: Colors.white, size: 48, fontSize: 16),
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            image: DecorationImage(
+              image: NetworkImage(
+                tailor.initials == 'RK'
+                ? 'https://picsum.photos/seed/tailor-rk/300/300'
+                : tailor.initials == 'PS'
+                  ? 'https://picsum.photos/seed/tailor-ps/300/300'
+                  : tailor.initials == 'AM'
+                    ? 'https://picsum.photos/seed/tailor-am/300/300'
+                    : tailor.initials == 'SK'
+                      ? 'https://picsum.photos/seed/tailor-sk/300/300'
+                      : 'https://picsum.photos/seed/tailor-default/300/300',
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(tailor.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.thread)),

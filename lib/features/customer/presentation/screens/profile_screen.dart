@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_theme.dart';
+import 'package:tailor_app/widgets/feature_image_banner.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -24,11 +25,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          FeatureImageBanner(
+            imageUrl: 'https://picsum.photos/seed/profile-hero/1200/800',
+            eyebrow: 'Your profile',
+            title: 'Keep your fit details stylish and organized.',
+            subtitle: 'Save your measurements, addresses, and payment options in one polished profile.',
+            height: 220,
+          ),
+          const SizedBox(height: 16),
           // ── Avatar & name ──────────────────────────────────────
           AppCard(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                const AvatarCircle(initials: 'JK', size: 64, fontSize: 22),
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    image: const DecorationImage(
+                      image: NetworkImage('https://picsum.photos/seed/profile-avatar/400/400'),
+                      fit: BoxFit.cover,
+                    ),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.10), blurRadius: 14, offset: const Offset(0, 6))],
+                  ),
+                ),
                 const SizedBox(width: 16),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Text('Jerron Kollie', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.thread)),
