@@ -8,6 +8,8 @@ class OrderModel {
   final String tailorId;
   final String dressType;
   final String color;
+  final String? fabric;
+  final String? notes;
   final Map<String, dynamic> measurements;
   final String? referenceImage;
   final DateTime deliveryDate;
@@ -21,6 +23,8 @@ class OrderModel {
     required this.tailorId,
     required this.dressType,
     required this.color,
+    this.fabric,
+    this.notes,
     required this.measurements,
     this.referenceImage,
     required this.deliveryDate,
@@ -51,6 +55,8 @@ class OrderModel {
       tailorId: map['tailorId'] as String? ?? '',
       dressType: map['dressType'] as String? ?? '',
       color: map['color'] as String? ?? '',
+        fabric: map['fabric'] as String?,
+        notes: map['notes'] as String?,
       measurements: measurements is Map<String, dynamic>
           ? Map<String, dynamic>.from(measurements)
           : {},
@@ -68,6 +74,8 @@ class OrderModel {
       'tailorId': tailorId,
       'dressType': dressType,
       'color': color,
+      'fabric': fabric,
+      'notes': notes,
       'measurements': measurements,
       'referenceImage': referenceImage,
       'deliveryDate': deliveryDate,
@@ -83,6 +91,8 @@ class OrderModel {
     String? tailorId,
     String? dressType,
     String? color,
+    String? fabric,
+    String? notes,
     Map<String, dynamic>? measurements,
     String? referenceImage,
     DateTime? deliveryDate,
@@ -96,6 +106,8 @@ class OrderModel {
       tailorId: tailorId ?? this.tailorId,
       dressType: dressType ?? this.dressType,
       color: color ?? this.color,
+      fabric: fabric ?? this.fabric,
+      notes: notes ?? this.notes,
       measurements: measurements ?? this.measurements,
       referenceImage: referenceImage ?? this.referenceImage,
       deliveryDate: deliveryDate ?? this.deliveryDate,
