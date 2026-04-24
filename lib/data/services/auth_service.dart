@@ -12,6 +12,13 @@ class AuthService {
     return error is FirebaseException && error.code == 'permission-denied';
   }
 
+  bool _isFirestoreOffline(Object error) {
+    if (error is! FirebaseException) return false;
+    if (error.code == 'unavailable') return true;
+    final message = (error.message ?? '').toLowerCase();
+    return message.contains('client is offline');
+  }
+
   DocumentReference<Map<String, dynamic>> _userRef(String uid) {
     return _firestore.collection('users').doc(uid);
   }
@@ -72,8 +79,8 @@ class AuthService {
       await _userRef(user.uid).set(profile.toMap(), SetOptions(merge: true));
       return profile;
     } catch (e) {
-      if (_isPermissionDenied(e)) {
-        // Keep auth working even if Firestore rules are stricter than expected.
+      if (_isPermissionDenied(e) || _isFirestoreOffline(e)) {
+        // Keep auth working even if Firestore is unavailable or rules are stricter.
         return _profileFromAuthUser(user, role: role);
       }
       rethrow;
@@ -98,7 +105,7 @@ class AuthService {
       try {
         return await _ensureUserProfile(user);
       } catch (e) {
-        if (_isPermissionDenied(e)) {
+        if (_isPermissionDenied(e) || _isFirestoreOffline(e)) {
           return _profileFromAuthUser(user);
         }
         rethrow;
@@ -186,7 +193,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       throw _authException(e, fallback: 'Failed to sign in. Please try again.');
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') {
+      if (e.code == 'permission-denied' || _isFirestoreOffline(e)) {
         final user = _auth.currentUser;
         if (user != null) {
           final fallback = _profileFromAuthUser(
@@ -229,7 +236,7 @@ class AuthService {
     try {
       return await _ensureUserProfile(user);
     } catch (e) {
-      if (_isPermissionDenied(e)) {
+      if (_isPermissionDenied(e) || _isFirestoreOffline(e)) {
         return _profileFromAuthUser(user);
       }
       rethrow;
@@ -253,7 +260,9 @@ class AuthService {
         controller.add(UserModel.fromMap(data, snapshot.id));
       }, onError: (error) {
         final user = _auth.currentUser;
-        if (user != null && user.uid == uid && _isPermissionDenied(error)) {
+        if (user != null &&
+            user.uid == uid &&
+            (_isPermissionDenied(error) || _isFirestoreOffline(error))) {
           controller.add(_profileFromAuthUser(user));
         } else {
           controller.addError(error);
