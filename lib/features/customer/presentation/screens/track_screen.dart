@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_theme.dart';
 
+const _kBg = Color(0xFF0D1B2A);
+const _kCard = Color(0xFF1A2B3C);
+const _kGold = Color(0xFFD4AF37);
+const _kBlue = Color(0xFF4A90E2);
+const _kGreen = Color(0xFF4CAF50);
+const _kMuted = Color(0xFF8FA3B1);
+const _kBorder = Color(0xFF243447);
+
 enum OrderStatus { pending, accepted, inProgress, ready, delivered }
 
 class _Order {
-  final String id;
-  final String name;
-  final String tailor;
-  final String estDate;
+  final String id, name, tailor, estDate;
   final OrderStatus status;
   _Order({required this.id, required this.name, required this.tailor, required this.estDate, required this.status});
 }
@@ -25,12 +30,38 @@ class TrackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.cream,
-      appBar: AppBar(title: const Text('Track Orders'), backgroundColor: AppColors.thread),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(20),
-        itemCount: _orders.length,
-        itemBuilder: (_, i) => _OrderTrackCard(order: _orders[i]),
+      backgroundColor: _kBg,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0, left: 0, right: 0, height: 200,
+            child: Image.network('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=500&fit=crop&q=80',
+                fit: BoxFit.cover, loadingBuilder: (_, c, p) => p == null ? c : Container(color: const Color(0xFF1B2A3B))),
+          ),
+          Positioned(top: 0, left: 0, right: 0, height: 240,
+            child: const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              colors: [Color(0x220D1B2A), Color(0xFF0D1B2A)], stops: [0.3, 1.0])))),
+          SafeArea(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+                  Text('LIVE STATUS', style: TextStyle(color: _kGold, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 2)),
+                  SizedBox(height: 4),
+                  Text('Track Orders', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: -0.4)),
+                ]),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                  itemCount: _orders.length,
+                  itemBuilder: (_, i) => _OrderTrackCard(order: _orders[i]),
+                ),
+              ),
+            ]),
+          ),
+        ],
       ),
     );
   }
@@ -50,54 +81,66 @@ class _OrderTrackCard extends StatelessWidget {
     }
   }
 
-  Widget get _badge {
+  Color get _statusColor {
     switch (order.status) {
-      case OrderStatus.pending: return StatusBadge.pending();
-      case OrderStatus.accepted: return StatusBadge.accepted();
-      case OrderStatus.inProgress: return StatusBadge.inProgress();
-      case OrderStatus.ready: return StatusBadge.ready();
-      case OrderStatus.delivered: return StatusBadge.delivered();
+      case OrderStatus.delivered: return _kGreen;
+      case OrderStatus.inProgress: return _kGold;
+      case OrderStatus.ready: return const Color(0xFF8B3A62);
+      default: return _kBlue;
+    }
+  }
+
+  String get _statusLabel {
+    switch (order.status) {
+      case OrderStatus.pending: return 'Pending';
+      case OrderStatus.accepted: return 'Accepted';
+      case OrderStatus.inProgress: return 'In Progress';
+      case OrderStatus.ready: return 'Ready';
+      case OrderStatus.delivered: return 'Delivered';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(color: _kCard, borderRadius: BorderRadius.circular(20), border: Border.all(color: _kBorder)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(order.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.thread)),
-              const SizedBox(height: 3),
-              Text('Order #${order.id} · ${order.tailor}', style: const TextStyle(fontSize: 11, color: AppColors.taupe)),
-            ])),
-            _badge,
-          ],
-        ),
-        const SizedBox(height: 14),
-        // Progress label strip
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            _StepLabel('Pending'), _StepLabel('Accepted'), _StepLabel('In Progress'), _StepLabel('Ready'), _StepLabel('Delivered'),
-          ],
-        ),
-        const SizedBox(height: 4),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(order.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white)),
+            const SizedBox(height: 3),
+            Text('Order #${order.id} · ${order.tailor}', style: const TextStyle(fontSize: 11, color: _kMuted)),
+          ])),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(color: _statusColor.withOpacity(0.12), borderRadius: BorderRadius.circular(20), border: Border.all(color: _statusColor.withOpacity(0.3))),
+            child: Text(_statusLabel, style: TextStyle(color: _statusColor, fontSize: 11, fontWeight: FontWeight.w800)),
+          ),
+        ]),
+        const SizedBox(height: 16),
+        // Progress steps
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
+          _StepLabel('Pending'), _StepLabel('Accepted'), _StepLabel('Stitching'), _StepLabel('Ready'), _StepLabel('Done'),
+        ]),
+        const SizedBox(height: 6),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(6),
           child: LinearProgressIndicator(
-            value: _progress,
-            minHeight: 6,
-            backgroundColor: Colors.black.withOpacity(0.07),
-            valueColor: AlwaysStoppedAnimation<Color>(order.status == OrderStatus.delivered ? AppColors.badgeGreenText : AppColors.gold),
+            value: _progress, minHeight: 7,
+            backgroundColor: Colors.white.withOpacity(0.07),
+            valueColor: AlwaysStoppedAnimation<Color>(_statusColor),
           ),
         ),
-        const SizedBox(height: 8),
-        Text('Est. delivery: ${order.estDate}', style: const TextStyle(fontSize: 11, color: AppColors.taupe)),
+        const SizedBox(height: 10),
+        Row(children: [
+          const Icon(Icons.calendar_today_outlined, size: 13, color: _kMuted),
+          const SizedBox(width: 5),
+          Text('Est. delivery: ${order.estDate}', style: const TextStyle(fontSize: 11, color: _kMuted)),
+        ]),
         if (order.status != OrderStatus.delivered) ...[
-          const AppDivider(),
-          const SectionLabel('Timeline'),
+          Divider(color: _kBorder, height: 24),
           _Timeline(status: order.status),
         ],
       ]),
@@ -109,7 +152,7 @@ class _StepLabel extends StatelessWidget {
   final String text;
   const _StepLabel(this.text);
   @override
-  Widget build(BuildContext context) => Text(text, style: const TextStyle(fontSize: 8.5, color: AppColors.taupe));
+  Widget build(BuildContext context) => Text(text, style: const TextStyle(fontSize: 8, color: _kMuted));
 }
 
 class _Timeline extends StatelessWidget {
@@ -128,37 +171,31 @@ class _Timeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(_steps.length, (i) {
-        final isDone = i < _activeIdx;
-        final isActive = i == _activeIdx;
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(children: [
-              Container(
-                width: 12, height: 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isDone ? AppColors.badgeGreenText : isActive ? AppColors.gold : Colors.black12,
-                ),
-                child: isDone ? const Icon(Icons.check, size: 8, color: Colors.white) : null,
-              ),
-              if (i < _steps.length - 1)
-                Container(width: 1, height: 28, color: Colors.black.withOpacity(0.1)),
-            ]),
-            const SizedBox(width: 12),
-            Expanded(child: Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(_steps[i].$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: (isDone || isActive) ? AppColors.thread : AppColors.taupe)),
-                const SizedBox(height: 2),
-                Text(_steps[i].$2, style: const TextStyle(fontSize: 11, color: AppColors.taupe)),
-              ]),
-            )),
-          ],
-        );
-      }),
-    );
+    return Column(children: List.generate(_steps.length, (i) {
+      final isDone = i < _activeIdx;
+      final isActive = i == _activeIdx;
+      final dotColor = isDone ? _kGreen : isActive ? _kGold : Colors.white.withOpacity(0.1);
+      return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Column(children: [
+          Container(
+            width: 13, height: 13,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor,
+                border: Border.all(color: isActive ? _kGold : Colors.transparent, width: 1.5)),
+            child: isDone ? const Icon(Icons.check, size: 8, color: Colors.white) : null,
+          ),
+          if (i < _steps.length - 1)
+            Container(width: 1, height: 28, color: Colors.white.withOpacity(0.08)),
+        ]),
+        const SizedBox(width: 12),
+        Expanded(child: Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(_steps[i].$1, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: (isDone || isActive) ? Colors.white : _kMuted)),
+            const SizedBox(height: 2),
+            Text(_steps[i].$2, style: const TextStyle(fontSize: 11, color: _kMuted)),
+          ]),
+        )),
+      ]);
+    }));
   }
 }
