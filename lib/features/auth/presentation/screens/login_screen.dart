@@ -95,13 +95,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
             height: MediaQuery.of(context).size.height * 0.48,
             child: Image.network(
               isTailor
-                  ? 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=1200&h=700&fit=crop&q=80'
-                  : 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=700&fit=crop&q=80',
+                  ? 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg?auto=compress&cs=tinysrgb&w=1600'
+                  : 'https://images.pexels.com/photos/974911/pexels-photo-974911.jpeg?auto=compress&cs=tinysrgb&w=1600',
               fit: BoxFit.cover,
               loadingBuilder: (context, child, progress) {
                 if (progress == null) return child;
                 return Container(color: const Color(0xFF1B2A3B));
               },
+              errorBuilder: (_, __, ___) => Container(color: const Color(0xFF1B2A3B)),
             ),
           ),
           // Gradient over image

@@ -75,12 +75,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen>
             top: 0, left: 0, right: 0,
             height: 260,
             child: Image.network(
-              'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&h=600&fit=crop&q=80',
+              'https://images.pexels.com/photos/5697256/pexels-photo-5697256.jpeg?auto=compress&cs=tinysrgb&w=1600',
               fit: BoxFit.cover,
               loadingBuilder: (context, child, progress) {
                 if (progress == null) return child;
                 return Container(height: 260, color: const Color(0xFF1B2A3B));
               },
+              errorBuilder: (_, __, ___) => Container(height: 260, color: const Color(0xFF1B2A3B)),
             ),
           ),
           // Gradient

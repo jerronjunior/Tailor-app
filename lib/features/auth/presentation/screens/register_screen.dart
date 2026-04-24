@@ -102,13 +102,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> with SingleTick
             height: 220,
             child: Image.network(
               isTailor
-                  ? 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=1200&h=500&fit=crop&q=80'
-                  : 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=1200&h=500&fit=crop&q=80',
+                  ? 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg?auto=compress&cs=tinysrgb&w=1600'
+                  : 'https://images.pexels.com/photos/6311659/pexels-photo-6311659.jpeg?auto=compress&cs=tinysrgb&w=1600',
               fit: BoxFit.cover,
               loadingBuilder: (context, child, progress) {
                 if (progress == null) return child;
                 return Container(height: 220, color: const Color(0xFF1B2A3B));
               },
+              errorBuilder: (_, __, ___) => Container(height: 220, color: const Color(0xFF1B2A3B)),
             ),
           ),
           Positioned(

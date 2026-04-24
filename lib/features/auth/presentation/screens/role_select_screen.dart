@@ -71,7 +71,7 @@ class RoleSelectScreen extends StatelessWidget {
                         title: 'Customer',
                         subtitle: 'Find tailors, place orders, track work, and chat in real time.',
                         icon: Icons.person_rounded,
-                        imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop&q=80',
+                        imageUrl: 'https://images.pexels.com/photos/974911/pexels-photo-974911.jpeg?auto=compress&cs=tinysrgb&w=1200',
                         accentColor: const Color(0xFF4A90E2),
                         tag: 'FOR SHOPPERS',
                         onLogin: () => context.push('${AppRoutes.login}?role=${AppConstants.roleCustomer}'),
@@ -84,7 +84,7 @@ class RoleSelectScreen extends StatelessWidget {
                         title: 'Tailor',
                         subtitle: 'Manage orders, update progress, and grow your business.',
                         icon: Icons.design_services_rounded,
-                        imageUrl: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=900&h=500&fit=crop&q=80',
+                        imageUrl: 'https://images.pexels.com/photos/4620843/pexels-photo-4620843.jpeg?auto=compress&cs=tinysrgb&w=1200',
                         accentColor: const Color(0xFFD4AF37),
                         tag: 'FOR CRAFTSPEOPLE',
                         onLogin: () => context.push('${AppRoutes.login}?role=${AppConstants.roleTailor}'),
@@ -113,12 +113,13 @@ class _HeroBanner extends StatelessWidget {
           height: 300,
           width: double.infinity,
           child: Image.network(
-            'https://images.unsplash.com/photo-1539008588435-666190588422?w=1200&h=600&fit=crop&q=80',
+            'https://images.pexels.com/photos/6311393/pexels-photo-6311393.jpeg?auto=compress&cs=tinysrgb&w=1600',
             fit: BoxFit.cover,
             loadingBuilder: (context, child, progress) {
               if (progress == null) return child;
               return Container(color: const Color(0xFF1B2A3B));
             },
+            errorBuilder: (_, __, ___) => Container(color: const Color(0xFF1B2A3B)),
           ),
         ),
         // Gradient overlay
@@ -243,6 +244,11 @@ class _RoleCard extends StatelessWidget {
                         child: const Center(child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFD4AF37))),
                       );
                     },
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 160,
+                      color: const Color(0xFF1A2B3C),
+                      child: Icon(icon, color: accentColor.withOpacity(0.9), size: 36),
+                    ),
                   ),
                 ),
                 // Dark overlay
