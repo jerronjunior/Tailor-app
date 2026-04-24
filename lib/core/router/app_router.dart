@@ -17,6 +17,7 @@ import 'package:tailor_app/features/customer/presentation/screens/measurements_s
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_home_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_orders_screen.dart';
 import 'package:tailor_app/features/tailor/presentation/screens/tailor_chat_screen.dart';
+import 'package:tailor_app/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'dart:async';
 
 /// Route names
@@ -32,6 +33,7 @@ class AppRoutes {
   static const String orderHistory = '/customer/orders';
   static const String customerChat = '/customer/chat/:chatId';
   static const String measurementProfiles = '/customer/measurements';
+  static const String editProfile = '/profile/edit';
   static const String tailorHome = '/tailor';
   static const String tailorOrders = '/tailor/orders';
   static const String tailorChat = '/tailor/chat/:chatId';
@@ -136,6 +138,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.measurementProfiles,
         builder: (_, __) => const MeasurementsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.editProfile,
+        builder: (_, __) => const EditProfileScreen(),
       ),
       // Tailor routes
       GoRoute(

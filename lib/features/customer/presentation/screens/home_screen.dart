@@ -207,7 +207,7 @@ class HomeScreen extends ConsumerWidget {
                         _ActionTile(icon: Icons.add_circle_outline, label: 'Place Order', color: _kGold, onTap: () => context.push(AppRoutes.tailorList)),
                         _ActionTile(icon: Icons.style_outlined, label: 'Browse Styles', color: _kBlue, onTap: () => context.push(AppRoutes.tailorList)),
                         _ActionTile(icon: Icons.local_shipping_outlined, label: 'Track Order', color: const Color(0xFF4CAF50), onTap: () => context.push(AppRoutes.orderHistory)),
-                        _ActionTile(icon: Icons.chat_bubble_outline, label: 'Messages', color: const Color(0xFF8B3A62), onTap: () {}),
+                        _ActionTile(icon: Icons.person_outline, label: 'Edit Profile', color: const Color(0xFF8B3A62), onTap: () => context.push(AppRoutes.editProfile)),
                       ],
                     ),
                   ),

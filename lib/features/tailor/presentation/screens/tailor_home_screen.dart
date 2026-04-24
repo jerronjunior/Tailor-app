@@ -194,7 +194,7 @@ class _TailorHomeScreenState extends ConsumerState<TailorHomeScreen> {
                         _ActionTile(icon: Icons.receipt_long_outlined, label: 'View Orders', color: _kGold, onTap: () => context.push(AppRoutes.tailorOrders)),
                         _ActionTile(icon: Icons.chat_bubble_outline, label: 'Messages', color: _kBlue, onTap: () {}),
                         _ActionTile(icon: Icons.bar_chart_rounded, label: 'Analytics', color: _kGreen, onTap: () {}),
-                        _ActionTile(icon: Icons.settings_outlined, label: 'Settings', color: _kMuted, onTap: () {}),
+                        _ActionTile(icon: Icons.person_outline, label: 'Edit Profile', color: _kMuted, onTap: () => context.push(AppRoutes.editProfile)),
                       ],
                     ),
                   ),
