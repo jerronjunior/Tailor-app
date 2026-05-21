@@ -68,7 +68,7 @@ class RoleSelectScreen extends StatelessWidget {
                       // Customer card
                       _RoleCard(
                         title: 'Customer',
-                        subtitle: 'Find tailors, place orders, track work, and chat in real time.',
+                        subtitle: ' place orders, track work, and chat in real time.',
                         icon: Icons.person_rounded,
                         imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=500&fit=crop&q=80',
                         accentColor: const Color(0xFF4A90E2),
