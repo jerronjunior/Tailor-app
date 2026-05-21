@@ -35,7 +35,7 @@ class MeasurementProfileModel {
     return MeasurementProfileModel(
       id: id,
       userId: map['userId'] as String? ?? '',
-      name: map['name'] as String? ?? 'Profile',
+      name: map['name'] as String? ?? '',
       measurements: measurements,
       createdAt: createdAt,
     );
