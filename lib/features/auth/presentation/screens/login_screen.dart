@@ -48,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (user.role != widget.role) {
         setState(() {
           _errorMessage =
-              'registered as ${user.role}. Please use the correct login.';
+              'This account is registered as ${user.role}. Please use the correct login.';
           _isLoading = false;
         });
         await ref.read(authServiceProvider).signOut();
