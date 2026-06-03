@@ -80,7 +80,7 @@ class RoleSelectScreen extends StatelessWidget {
 
                       // Tailor card
                       _RoleCard(
-                        title: 'r',
+                        title: 'Tailor',
                         subtitle: 'Manage orders, update progress, and grow your business.',
                         icon: Icons.design_services_rounded,
                         imageUrl: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=900&h=500&fit=crop&q=80',
