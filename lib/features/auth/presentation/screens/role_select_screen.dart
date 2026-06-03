@@ -198,7 +198,7 @@ class _HeroBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'A modern , all in one place.',
+                  'A modern tailoring experience, all in one place.',
                   style: TextStyle(
                     color: Color(0xCCFFFFFF),
                     fontSize: 13.5,
