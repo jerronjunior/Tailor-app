@@ -7,6 +7,20 @@ class AppColors {
   static const secondary = Color(0xFF4F46E5); // Indigo
   static const accent = Color(0xFF10B981); // Emerald Green
   
+  // Legacy Colors (Deprecated, kept for backward compatibility)
+  @Deprecated('Use primary instead')
+  static const thread = Color(0xFF2C1A0E);
+  @Deprecated('Use background instead')
+  static const sand = Color(0xFFF5F0E8);
+  @Deprecated('Use cardBackground instead')
+  static const cream = Color(0xFFFAF7F2);
+  @Deprecated('Use accent instead')
+  static const gold = Color(0xFFC9973A);
+  @Deprecated('Use secondary instead')
+  static const silk = Color(0xFF8B5E3C);
+  @Deprecated('Use textSecondary instead')
+  static const taupe = Color(0xFF9A8F82);
+
   // Backgrounds
   static const background = Color(0xFFF8FAFC);
   static const cardBackground = Colors.white;
